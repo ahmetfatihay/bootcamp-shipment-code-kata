@@ -12,18 +12,11 @@ public class Basket {
     private List<Product> products;
 
     public ShipmentSize getShipmentSize() {
-        if (isThereXlarge()) {
-            return ShipmentSize.X_LARGE;
-        }
         ShipmentSize result = isThereSizeMoreThanTwo();
         if (Objects.nonNull(result)) {
             return result;
         }
         return biggestSize();
-    }
-
-    private boolean isThereXlarge() {
-        return products.stream().anyMatch(product -> product.getSize().equals(ShipmentSize.X_LARGE));
     }
 
     private ShipmentSize isThereSizeMoreThanTwo() {
@@ -34,6 +27,9 @@ public class Basket {
                 .filter(entry -> entry.getValue() >= 3)
                 .map(Map.Entry::getKey).findFirst().orElse(null);
 
+        if (Objects.nonNull(moreThanThree) && moreThanThree.equals(ShipmentSize.X_LARGE)){
+            return ShipmentSize.X_LARGE;
+        }
         return (Objects.nonNull(moreThanThree) ? moreThanThree.getNextSize() : null);
     }
 
