@@ -12,28 +12,28 @@ public class Basket {
     private List<Product> products;
 
     public ShipmentSize getShipmentSize() {
-        ShipmentSize result = isThereSizeMoreThanTwo();
+        ShipmentSize result = getIfThereIsAnySizeMoreThanTwo();
         if (Objects.nonNull(result)) {
             return result;
         }
-        return biggestSize();
+        return getBiggestSize();
     }
 
-    private ShipmentSize isThereSizeMoreThanTwo() {
+    private ShipmentSize getIfThereIsAnySizeMoreThanTwo() {
         Map<ShipmentSize, Long> sizeCountMap = products.stream()
                 .collect(Collectors.groupingBy(Product::getSize, Collectors.counting()));
 
         ShipmentSize moreThanThree = sizeCountMap.entrySet().stream()
                 .filter(entry -> entry.getValue() >= 3)
                 .map(Map.Entry::getKey).findFirst().orElse(null);
-
+       
         if (Objects.nonNull(moreThanThree) && moreThanThree.equals(ShipmentSize.X_LARGE)){
             return ShipmentSize.X_LARGE;
         }
         return (Objects.nonNull(moreThanThree) ? moreThanThree.getNextSize() : null);
     }
 
-    private ShipmentSize biggestSize() {
+    private ShipmentSize getBiggestSize() {
         List<ShipmentSize> shipmentSizeEnumList = Arrays.asList(ShipmentSize.values());
         Collections.reverse(shipmentSizeEnumList);
         for (ShipmentSize size : shipmentSizeEnumList) {
